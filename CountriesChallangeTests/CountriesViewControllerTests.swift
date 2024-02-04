@@ -23,11 +23,11 @@ final class CountriesViewController: UITableViewController {
         
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
-        refreshControl?.beginRefreshing()
         load()
     }
     
     @objc private func load() {
+        refreshControl?.beginRefreshing()
         loader?.load { _ in }
     }
     
@@ -35,56 +35,36 @@ final class CountriesViewController: UITableViewController {
 
 final class CountriesViewControllerTests: XCTestCase {
 
-    func test_init_doesNotLoadCountry() {
+    func test_loadCountry_requestFromCountryLoader() {
         
-        let (_, loader) = makeSUT()
-        XCTAssertEqual(loader.loadCallCount, 0)
-    }
-    
-    func test_viewDidLoad_loadCountry() {
         let (sut, loader) = makeSUT()
+        XCTAssertEqual(loader.loadCallCount, 0, "Expected no loading request before view is loaded")
         sut.loadViewIfNeeded()
         
-        XCTAssertEqual(loader.loadCallCount, 1)
-    }
-    
-    func test_userInitiatedCountryReload_loadCountry() {
-        let (sut, loader) = makeSUT()
-        sut.loadViewIfNeeded()
+        XCTAssertEqual(loader.loadCallCount, 1, "Expected 1 loading request once view is loaded")
         
         sut.simulateUserInitiatedReload()
-        XCTAssertEqual(loader.loadCallCount, 2)
+        XCTAssertEqual(loader.loadCallCount, 2, "Expected another loading request once user initiates a load")
         
         
         sut.simulateUserInitiatedReload()
-        XCTAssertEqual(loader.loadCallCount, 3)
+        XCTAssertEqual(loader.loadCallCount, 3, "Expected a third loading request once user initiates another load")
     }
     
-    func test_viewDidLoad_hidesLoadingIndicatorOnLoaderCompletion() {
+    func test_loadingCountryIndicator_isVisibleWhileLoadingCountry() {
         let (sut, loader) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeCountryLoading()
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expected Loading indicator once view is loaded")
         
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, false)
-    }
+        loader.completeCountryLoading(at: 0)
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expected no loading indicator once loading is completed")
     
-    func test_userInitiatedCountryReload_showsLoadingIndicator() {
-        let (sut, _) = makeSUT()
-        
-        sut.loadViewIfNeeded()
         sut.simulateUserInitiatedReload()
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expected loading indicator once user initiates a reload")
         
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, true)
-    }
-    
-    func test_userInitiatedCountryReload_hidesLoadingIndicatorOnLoaderCompeltion() {
-        let (sut, loader) = makeSUT()
-        
-        sut.simulateUserInitiatedReload()
-        loader.completeCountryLoading()
-        
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, false)
+        loader.completeCountryLoading(at: 1)
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expected no loading indicator once user initiated loading is completed")
     }
     
     private func makeSUT(file: StaticString = #file
@@ -108,8 +88,8 @@ final class CountriesViewControllerTests: XCTestCase {
             completions.append(completion)
         }
         
-        func completeCountryLoading() {
-            completions[0](.success([]))
+        func completeCountryLoading(at index: Int) {
+            completions[index](.success([]))
         }
     }
 }
@@ -117,6 +97,10 @@ final class CountriesViewControllerTests: XCTestCase {
 private extension CountriesViewController {
     func simulateUserInitiatedReload() {
         refreshControl?.simulatePullToRefresh()
+    }
+    
+    var isShowingLoadingIndicator: Bool {
+        return refreshControl?.isRefreshing == true
     }
 }
 
