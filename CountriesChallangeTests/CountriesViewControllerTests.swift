@@ -54,16 +54,13 @@ final class CountriesViewControllerTests: XCTestCase {
         loader.completeCountryLoading(with: [country], at: 0)
         XCTAssertEqual(sut.numberOfRenderedCountryView(), 1)
         
-        let view = sut.country(at: 0) as? CountryCell
-        XCTAssertNotNil(view)
-        XCTAssertEqual(view?.nameAndCountry, "\(country.name), \(country.region)")
-        XCTAssertEqual(view?.countryCode, country.code)
-        XCTAssertEqual(view?.capital, country.capital)
-        
-        
+        assertThat(sut: sut, configureWith: country, at: 0)
+
         sut.simulateUserInitiatedReload()
         loader.completeCountryLoading(with: [anyCountry(), anyCountry2()], at: 1)
+        
         XCTAssertEqual(sut.numberOfRenderedCountryView(), 2)
+        assertThat(sut: sut, configureWith: anyCountry2(), at: 1)
     }
     
     func test_loadCountryCompletion_doesNotAlterCurrentRenderingStateOnError() {
@@ -74,21 +71,49 @@ final class CountriesViewControllerTests: XCTestCase {
         loader.completeCountryLoading(with: [country], at: 0)
         XCTAssertEqual(sut.numberOfRenderedCountryView(), 1)
         
-        let view = sut.country(at: 0) as? CountryCell
-        XCTAssertNotNil(view)
-        XCTAssertEqual(view?.nameAndCountry, "\(country.name), \(country.region)")
-        XCTAssertEqual(view?.countryCode, country.code)
-        XCTAssertEqual(view?.capital, country.capital)
-        
+        assertThat(sut: sut, configureWith: country, at: 0)
+
         sut.simulateUserInitiatedReload()
         loader.completeCountryLoadingWithError(at: 1)
         
-        let view2 = sut.country(at: 0) as? CountryCell
-        XCTAssertNotNil(view2)
-        XCTAssertEqual(view2?.nameAndCountry, "\(country.name), \(country.region)")
-        XCTAssertEqual(view2?.countryCode, country.code)
-        XCTAssertEqual(view2?.capital, country.capital)
+        assertThat(sut: sut, configureWith: country, at: 0)
     }
+    
+    func test_loadCountryCompletion_ShowAlertControllerOnError() {
+        let country = anyCountry()
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeCountryLoading(with: [country], at: 0)
+        XCTAssertEqual(sut.numberOfRenderedCountryView(), 1)
+        
+        assertThat(sut: sut, configureWith: country, at: 0)
+
+        sut.simulateUserInitiatedReload()
+        loader.completeCountryLoadingWithError(at: 1)
+        
+        XCTAssertNotNil(sut.alert as! UIAlertController, "Expected Error controller should be visible but")
+    }
+    
+    func test_loadingIndicator_isVisibleWhileLoadingCountry() {
+        let country = anyCountry()
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expected loading indicator once view is loaded")
+        
+        loader.completeCountryLoading(with: [country], at: 0)
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expected no loading indicator once loading completed")
+        
+        sut.simulateUserInitiatedReload()
+        XCTAssertTrue(sut.isShowingLoadingIndicator, "Expected loading indicator once user initiate a reload")
+        
+        loader.completeCountryLoadingWithError(at: 1)
+        XCTAssertFalse(sut.isShowingLoadingIndicator, "Expected no loading indicator once loading completed")
+        
+        assertThat(sut: sut, configureWith: country, at: 0)
+    }
+    
     
     private func makeSUT(file: StaticString = #file
                          , line: UInt = #line) -> (sut: CountriesViewController, loader: LoaderSpy) {
@@ -101,6 +126,22 @@ final class CountriesViewControllerTests: XCTestCase {
         return (sut, loader)
     }
     
+    
+    private func assertThat(sut: CountriesViewController, configureWith country: Country, at index: Int, 
+                            file: StaticString = #file, line: UInt = #line) {
+        let view = sut.country(at: index) as? CountryCell
+        XCTAssertNotNil(view, "Expect view should not be null"
+                        , file: file, line: line)
+        XCTAssertEqual(view?.nameAndCountry, "\(country.name), \(country.region)"
+                       , "Expected name and country label should be \(country.name), \(country.region) but found \(view?.nameAndCountry)"
+                       , file: file, line: line)
+        XCTAssertEqual(view?.countryCode, country.code
+                       , "Expected Country code \(country.code) but found \(view?.countryCode)"
+                       , file: file, line: line)
+        XCTAssertEqual(view?.capital, country.capital
+                       , "Expected Country Capital \(country.capital) but found \(view?.capitalLabel)"
+                       , file: file, line: line)
+    }
     
     class LoaderSpy: CountryLoader {
         var completions = [(LoadCountryResult) -> Void]()
@@ -135,7 +176,7 @@ private extension CountriesViewController {
     }
     
     var isShowingLoadingIndicator: Bool {
-        return refreshControl?.isRefreshing == true
+        return activityIndicator.isAnimating == true
     }
     
     func numberOfRenderedCountryView() -> Int {

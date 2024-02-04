@@ -13,6 +13,14 @@ public final class CountriesViewController: UITableViewController {
     private var loader: CountryLoader?
     private var tableModel = [Country]()
     
+    public lazy var activityIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.accessibilityIdentifier = "activityIndicator"
+        view.style = .large
+        return view
+    }()
+    
     public convenience init(loader: CountryLoader) {
         self.init()
         self.loader = loader
@@ -27,17 +35,16 @@ public final class CountriesViewController: UITableViewController {
     }
     
     @objc private func load() {
-        refreshControl?.beginRefreshing()
+        activityIndicator.startAnimating()
         loader?.load { [weak self] result in
             switch result {
             case .success(let countries):
                 self?.tableModel = countries
                 self?.tableView.reloadData()
-                self?.refreshControl?.endRefreshing()
             case .failure(let error):
-                break
+               break
             }
-            
+            self?.activityIndicator.stopAnimating()
         }
     }
     
