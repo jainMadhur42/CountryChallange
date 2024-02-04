@@ -8,13 +8,13 @@
 import Foundation
 
 public struct Country: Equatable, Codable {
-    let capital: String
-    let code: String
-    let currency: Currency
-    let flag: String
-    let language: Language
-    let name: String
-    let region: String
+    public let capital: String
+    public let code: String
+    public let currency: Currency
+    public let flag: String
+    public let language: Language
+    public let name: String
+    public let region: String
     
     public init(capital: String, code: String, currency: Currency, flag: String, language: Language, name: String, region: String) {
         self.capital = capital

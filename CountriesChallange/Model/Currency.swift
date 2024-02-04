@@ -8,9 +8,9 @@
 import Foundation
 
 public struct Currency: Equatable, Codable {
-    let code: String
-    let name: String
-    let symbol: String?
+    public let code: String
+    public let name: String
+    public let symbol: String?
     
     public init(code: String, name: String, symbol: String?) {
         self.code = code
