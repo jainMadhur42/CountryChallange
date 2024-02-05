@@ -9,14 +9,16 @@ import UIKit
 
 public class CountryRefreshController: NSObject {
     
+    var loader: CountryLoader
+    var onRefresh: (([Country]) -> Void)?
+    var onError: ((Error) -> Void)?
+    
+    
     private(set) lazy var refreshControl: UIRefreshControl = {
         var view = UIRefreshControl()
         view.addTarget(self, action: #selector(load), for: .valueChanged)
         return view
     }()
-    
-    var loader: CountryLoader
-    var onRefresh: (([Country]) -> Void)?
     
     public init(loader: CountryLoader) {
         self.loader = loader
@@ -30,6 +32,7 @@ public class CountryRefreshController: NSObject {
             case .success(let countries):
                 self.onRefresh?(countries)
             case .failure(let error):
+                self.onError?(error)
                 break
             }
             self.refreshControl.endRefreshing()

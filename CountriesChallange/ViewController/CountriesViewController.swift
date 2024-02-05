@@ -62,6 +62,18 @@ public final class CountriesViewController: UITableViewController {
             guard let self = self else { return }
             self.allCountries = countries
         }
+        refreshController?.onError = { [weak self] error in
+            guard let self = self else { return }
+            let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+            let cancel = UIAlertAction(title: "Cancel", style: .cancel)
+            alert.addAction(cancel)
+            let retry = UIAlertAction(title: "Retry", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                self.refreshController?.load()
+            }
+            alert.addAction(retry)
+            self.present(alert, animated: true)
+        }
         searchController.hidesNavigationBarDuringPresentation = true
     }
     

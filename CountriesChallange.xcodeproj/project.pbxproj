@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		E09E4D342B6F8AE700AE5CB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09E4D332B6F8AE700AE5CB5 /* AppDelegate.swift */; };
 		E09E4D362B6F8AE700AE5CB5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09E4D352B6F8AE700AE5CB5 /* SceneDelegate.swift */; };
-		E09E4D382B6F8AE700AE5CB5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09E4D372B6F8AE700AE5CB5 /* ViewController.swift */; };
 		E09E4D3D2B6F8AE800AE5CB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E09E4D3C2B6F8AE800AE5CB5 /* Assets.xcassets */; };
 		E09E4D402B6F8AE800AE5CB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E09E4D3E2B6F8AE800AE5CB5 /* LaunchScreen.storyboard */; };
 		E09E4D642B6F8CCD00AE5CB5 /* CountriesViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09E4D632B6F8CCD00AE5CB5 /* CountriesViewControllerTests.swift */; };
@@ -46,7 +45,6 @@
 		E09E4D302B6F8AE700AE5CB5 /* CountriesChallange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesChallange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E09E4D332B6F8AE700AE5CB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E09E4D352B6F8AE700AE5CB5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		E09E4D372B6F8AE700AE5CB5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		E09E4D3C2B6F8AE800AE5CB5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E09E4D3F2B6F8AE800AE5CB5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E09E4D412B6F8AE800AE5CB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -116,7 +114,6 @@
 				E09E4D762B6F8FE600AE5CB5 /* Model */,
 				E09E4D332B6F8AE700AE5CB5 /* AppDelegate.swift */,
 				E09E4D352B6F8AE700AE5CB5 /* SceneDelegate.swift */,
-				E09E4D372B6F8AE700AE5CB5 /* ViewController.swift */,
 				E09E4D3C2B6F8AE800AE5CB5 /* Assets.xcassets */,
 				E09E4D3E2B6F8AE800AE5CB5 /* LaunchScreen.storyboard */,
 				E09E4D412B6F8AE800AE5CB5 /* Info.plist */,
@@ -304,7 +301,6 @@
 				E09E4D822B6F903900AE5CB5 /* URLSessionHttpClient.swift in Sources */,
 				E09E4D872B6F906000AE5CB5 /* CountryLoader.swift in Sources */,
 				E09E4D842B6F903900AE5CB5 /* HTTPClient.swift in Sources */,
-				E09E4D382B6F8AE700AE5CB5 /* ViewController.swift in Sources */,
 				E09E4D342B6F8AE700AE5CB5 /* AppDelegate.swift in Sources */,
 				E09E4D362B6F8AE700AE5CB5 /* SceneDelegate.swift in Sources */,
 				E09E4D972B6FC6AB00AE5CB5 /* CountryCell.swift in Sources */,
@@ -488,9 +484,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.CountriesChallange;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -516,9 +515,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.CountriesChallange;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -532,14 +534,17 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CN89264FDM;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.CountriesChallangeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CountriesChallange.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CountriesChallange";
 			};
 			name = Debug;
@@ -554,13 +559,16 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CN89264FDM;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.CountriesChallangeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CountriesChallange.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CountriesChallange";
 			};
 			name = Release;
