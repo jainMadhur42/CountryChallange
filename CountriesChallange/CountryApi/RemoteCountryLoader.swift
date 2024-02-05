@@ -7,6 +7,25 @@
 
 import Foundation
 
+
+public class CountryLoaderDecorator: CountryLoader {
+    var decorate: CountryLoader
+    
+    init(decorate: CountryLoader) {
+        self.decorate = decorate
+    }
+    
+    public func load(completion: @escaping (LoadCountryResult) -> Void) {
+        decorate.load { result in
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+    }
+    
+    
+}
+
 public final class RemoteCountryLoader: CountryLoader {
     private let url: URL
     private let client: HTTPClient

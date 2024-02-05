@@ -10,13 +10,19 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    private lazy var navigationController = UINavigationController(
+        rootViewController: createCountriesViewController())
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        let window = UIWindow(windowScene: windowScene)
+        window.rootViewController = navigationController
+        self.window = window
+        window.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -47,6 +53,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    private func createCountriesViewController() -> CountriesViewController {
+        var url = URL(string:  "https://gist.githubusercontent.com/peymano-wmt/32dcb892b06648910ddd40406e37fdab/raw/db25946fd77c5873b0303b858e861ce724e0dcd0/countries.json")!
+        
+        let httpClient = URLSessionHttpClient()
+        
+        let remoteCountryLoader = RemoteCountryLoader(url: url, client: httpClient)
+        let loader = CountryLoaderDecorator(decorate: remoteCountryLoader)
+        var refreshController = CountryRefreshController(loader: loader)
+        let viewController = CountriesViewController(refreshController: refreshController
+                                                     , onCountrySelect: openCountry)
+        return viewController
+    }
+        
+        private func openCountry(country: Country) -> Void {
+            navigationController.pushViewController(CountryDetailViewController(country: country)
+                                                    , animated: true)
+        }
+    
+    
 
 }
 

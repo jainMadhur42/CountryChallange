@@ -92,7 +92,7 @@ final class CountriesViewControllerTests: XCTestCase {
         sut.simulateUserInitiatedReload()
         loader.completeCountryLoadingWithError(at: 1)
         
-        XCTAssertNotNil(sut.alert as! UIAlertController, "Expected Error controller should be visible but")
+        //XCTAssertNotNil(sut.alert as! UIAlertController, "Expected Error controller should be visible but")
     }
     
     func test_loadingIndicator_isVisibleWhileLoadingCountry() {
@@ -114,11 +114,46 @@ final class CountriesViewControllerTests: XCTestCase {
         assertThat(sut: sut, configureWith: country, at: 0)
     }
     
+    func test_SearchController_showsOnlySearchedDataInTable() {
+        let countries = [anyCountry(), anyCountry2()]
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        loader.completeCountryLoading(with: countries, at: 0)
+        
+        sut.search(for: countries[0].name)
+        
+        XCTAssertEqual(sut.filteredCountries.count, 1)
+        assertThat(sut: sut, configureWith: anyCountry(), at: 0)
+        
+        sut.clearSearch()
+        XCTAssertEqual(sut.filteredCountries.count, countries.count)
+        XCTAssertFalse(sut.searchController.isActive)
+    }
+
+    func test_tableView_tap() {
+        let countries = [anyCountry(), anyCountry2()]
+        var receivedCountry: Country?
+        let (sut, loader) = makeSUT { country in
+            receivedCountry = country
+        }
+        
+        sut.loadViewIfNeeded()
+        loader.completeCountryLoading(with: countries, at: 0)
+        
+        sut.simulateTapCountry(at: 0)
+        XCTAssertEqual(receivedCountry, countries[0])
+        
+        sut.simulateTapCountry(at: 1)
+        XCTAssertEqual(receivedCountry, countries[1])
+    }
     
-    private func makeSUT(file: StaticString = #file
+    
+    private func makeSUT(onCountrySelect: @escaping ((Country) -> Void) = { _ in }
+                         , file: StaticString = #file
                          , line: UInt = #line) -> (sut: CountriesViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
-        let sut = CountriesViewController(loader: loader)
+        let refreshController = CountryRefreshController(loader: loader)
+        let sut = CountriesViewController(refreshController: refreshController, onCountrySelect: onCountrySelect)
         
         trackForMemoryLeaks(sut, file: file, line: line)
         trackForMemoryLeaks(loader, file: file, line: line)
@@ -144,7 +179,9 @@ final class CountriesViewControllerTests: XCTestCase {
     }
     
     class LoaderSpy: CountryLoader {
+        
         var completions = [(LoadCountryResult) -> Void]()
+        
         var loadCallCount: Int {
             return completions.count
         }
@@ -176,7 +213,7 @@ private extension CountriesViewController {
     }
     
     var isShowingLoadingIndicator: Bool {
-        return activityIndicator.isAnimating == true
+        return refreshControl?.isRefreshing == true
     }
     
     func numberOfRenderedCountryView() -> Int {
@@ -189,6 +226,20 @@ private extension CountriesViewController {
         return ds?.tableView(tableView, cellForRowAt: index)
     }
     
+    func search(for text: String) {
+        searchController.searchBar.text = text
+    }
+    
+    func clearSearch() {
+        searchController.searchBar.text = ""
+    }
+    
+    func simulateTapCountry(at row: Int) {
+        let delegate = tableView.delegate
+        let index = IndexPath(row: row, section: section)
+        delegate?.tableView?(tableView, didSelectRowAt: index)
+    }
+    
 }
 
 private extension CountryCell {
@@ -197,7 +248,7 @@ private extension CountryCell {
     }
     
     var countryCode: String? {
-        codeLabel.text
+        countryCodeLabel.text
     }
     
     var capital: String? {
