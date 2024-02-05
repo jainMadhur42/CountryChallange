@@ -24,5 +24,4 @@ public final class CountryCell: UITableViewCell {
         countryCodeLabel.text = country.code
         capitalLabel.text = country.capital
     }
-
 }
